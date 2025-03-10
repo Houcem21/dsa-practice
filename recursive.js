@@ -37,13 +37,15 @@ function convertToBinary(number) {
 }
 
 // Array permutations
-function permutate(array, pointer=array.length) {
-    console.log(array.length-pointer+1)
-    const subArray = array.slice(array.length-pointer+1)
-    if (subArray.length === 1) return subArray
-    let permutated = []
-    permutated.push(...subArray)
-    return permutated;
+function permutate(array, pointer=array.length, permutations=[]) {
+    const index = array.length - pointer;
+    const subArray = array.slice(index)
+    const perm = subArray.concat(array.slice(0,index))
+    
+    permutations.push(perm)
+    permutations.push()
+    if (subArray.length === 1) return permutations
+    return permutate(array, pointer-1, permutations)
 }
 
-console.log(permutate(['A','C','D']))
+console.log(permutate(['F','A','C','E']))
