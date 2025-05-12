@@ -53,9 +53,40 @@ function binSearch(array, n) {
     return -1
 }
 
-const array = [1,3,4,5,2,1,0,14,7,3,9,5,2,4]
-const result = linearSearch(array, 2)
+// More binary search cuz ts is hard
+function binaryFreshSearch(array, q, begIndex = 0, endIndex = array.length) {
+    const median = Math.floor(endIndex / 2)
+    if (q > array[median]) {begIndex = median; endIndex=array.length}
+    else {endIndex = median; begIndex = 0}
+    console.log(array, begIndex, endIndex)
+    if (q === array[median] || q === array[0]) return true
+    if (endIndex === 1) return false
+    return binaryFreshSearch(array.slice(begIndex, endIndex),q)
+}
 
-const sortedArray = sortArray(array)
-display(sortedArray)
-display(binSearch(sortedArray, 14))
+
+// Bubble sort
+function bubbleSort(array) {
+    for (let i = 0; i < array.length-1; i++) {
+        let temp = array[i];
+        array[i] = array[i+1];
+        array[i+1] = temp;
+    }
+    console.log(array)
+}
+
+
+function selectionSort(arr) {
+    for (let i = 0; i < arr.length; i++) {
+        const element = arr[i];
+        const remArray = arr.slice(i)
+        const minEl = Math.min(...remArray)
+        console.log(remArray,minEl)
+        let temp = element;
+    }
+}
+
+const array = [11,0,3,14,1,6,14,17,4,2,3]
+const result = selectionSort(array)
+
+console.log(result)
