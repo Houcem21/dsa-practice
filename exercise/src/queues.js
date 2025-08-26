@@ -38,10 +38,33 @@ class Queue {
     }
 }
 
-let line = new Queue(['mike','emily','tucker','lily'])
-line.dequeue()
-line.enqueue('phil')
-displayText(line.value())
-displayText(line.access(1))
+class Stack {
+    constructor() {
+        this.queue1 = new Queue([]);
+        this.queue2 = new Queue([]);
+    }
 
-displayText(line.search('tucker'))
+    push(value) {
+        this.queue1.enqueue(value);
+    }
+
+    pop() {
+        if (this.queue1.queueArray.length === 0) return undefined;
+
+        while (this.queue1.queueArray.length > 1) {
+            this.queue2.enqueue(this.queue1.dequeue());
+        }
+        let result = this.queue1.dequeue();
+
+        [this.queue1, this.queue2] = [this.queue2, this.queue1];
+
+        return result;
+    }
+}
+
+let stack = new Stack();
+stack.push(1)
+stack.push(2)
+stack.push(3)
+stack.push(4)
+console.log("first element to remove is: ", stack.pop())
