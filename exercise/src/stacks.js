@@ -1,13 +1,13 @@
 import displayText from "./index.js";
 
-class Stack {
+export class Stack {
     constructor(array=[]) {
         this.stackArray = array;
         this.length = array?.length;
     }
 
     peek() {
-        return this.stackArray[this.length-1];
+        return this.stackArray.at(-1);
     }
     push(value) {
         return this.stackArray.push(value);
@@ -16,7 +16,7 @@ class Stack {
         return this.stackArray.pop();
     }
     isEmpty() {
-        return this.length === 0;
+        return this.stackArray.length === 0;
     }
     size() {
         return this.length;

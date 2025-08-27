@@ -1,6 +1,8 @@
 import displayText from "./index.js";
-
+import { Stack } from "./stacks.js"; 
 displayText("- hello from usecases -")
+
+// Manage Cutomer Orders
 
 class Customer {
     constructor(name, order) {
@@ -29,13 +31,14 @@ class CustomerLine {
     }
 }
 
-let queue = new CustomerLine([]);
-const newCustomer = new Customer('eddy', 'meatballs')
-const newCustomerLater = new Customer('emmy', 'lasagna')
-queue.addOrder(newCustomer)
-queue.addOrder(newCustomerLater)
-queue.deliverOrder()
+// let queue = new CustomerLine([]);
+// const newCustomer = new Customer('eddy', 'meatballs')
+// const newCustomerLater = new Customer('emmy', 'lasagna')
+// queue.addOrder(newCustomer)
+// queue.addOrder(newCustomerLater)
+// queue.deliverOrder()
 
+// Validate a set of parentheses
 
 class ParanthesesValidator {
     constructor(str) {
@@ -79,6 +82,43 @@ class ParanthesesValidator {
     }
 }
 
-let paranthesesValidator = new ParanthesesValidator('(())))')
-paranthesesValidator.display()
+// let paranthesesValidator = new ParanthesesValidator('(())))')
+// paranthesesValidator.display()
 
+// Sortable Stack
+
+class StackSorter {
+    constructor(array) {
+        this.size = array.length
+        this.unsortedStack = new Stack(array)
+        this.sortedStack = new Stack()
+    }
+
+    sort() {
+        while (!this.unsortedStack.isEmpty()) {
+            const element = this.unsortedStack.pop();
+            console.log(element)
+            if (element > this.sortedStack.peek() || this.sortedStack.isEmpty()) {
+                console.log(element, 'is bigger than', this.sortedStack.peek())
+                this.sortedStack.push(element);
+            }
+            else {
+                console.log(element, 'is smaller than', this.sortedStack.peek())
+                while (!this.sortedStack.isEmpty() && element < this.sortedStack.peek()) {
+                    const biggerElement = this.sortedStack.pop();
+                    this.unsortedStack.stackArray.push(biggerElement);
+                }
+                this.sortedStack.push(element);
+            }
+        }
+        console.log('sorted stack:', this.sortedStack.value())
+    }
+
+    display() {
+        displayText(this.unsortedStack.value())
+    }
+}
+
+// let stackSorter = new StackSorter([5, 1, 4, 3, 2]);
+// stackSorter.display();
+// stackSorter.sort();
