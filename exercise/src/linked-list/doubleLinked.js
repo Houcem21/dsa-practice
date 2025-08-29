@@ -1,6 +1,6 @@
-import displayText from '../index.js'
+import displayText from '../index.js';
 
-displayText('HI')
+displayText('HI');
 
 // Build this properly
 
@@ -15,52 +15,66 @@ class DoublyLinkedListNode {
 class DoublyLinkedList {
     constructor() {
         this.head = null;
+        this.tail = null;
         this.size = 0;
     }
 
     isEmpty = () => this.size == 0;
 
-    insert(node) {
-        if (this.head == null) this.head = new DoublyLinkedListNode(node);
-        else {
-            let temp = this.head;
-            this.head = new DoublyLinkedListNode(node);
-            this.head.next = temp
+    insertAtHead(nodeValue) {
+        if (this.head == null) {
+            this.head = new DoublyLinkedListNode(nodeValue);
+            this.tail = this.head;
         }
-        this.size++;
+        else {
+            let temp = new DoublyLinkedListNode(nodeValue);
+            temp.next = this.head;
+            this.head.prev = temp;
+            this.head = temp;
+        }
+        this.size++; 
     }
 
-    remove(nodeValue) {
-        let counter = 0;
+    insertAtTail(nodeValue) {
+        if (this.tail == null) {
+            this.head = new DoublyLinkedListNode(nodeValue);
+            this.tail = this.head;
+        }
+        else {
+            let temp = new DoublyLinkedListNode(nodeValue);
+            temp.prev = this.tail;
+            this.tail.next = temp;
+            this.tail = temp;
+        }
+        this.size++; 
     }
 
     removeAtHead() {
-        if (this.size ==0) return null; 
-
-        this.head = this.head.next;
-        this.size--;
-        return this.head
+        const temp = this.head;
+        switch (this.size) {
+            case 0:
+                break;
+            case 1:
+                this.size--;
+                this.head = null;
+                this.tail = null;
+                break;
+            default:
+                this.size--;
+                this.head = this.head.next;
+                this.head.prev = null;
+                break;
+        }
+        return temp;
     }
 
-    search(query) {
-        let currentHead = this.head;
-        let counter = 0;
-        while(++counter <= this.size) {
-            if (currentHead.data == query) {
-                console.log('item number:', counter); 
-                return counter;
-            }
-            currentHead = currentHead.next;
-        }
-        console.log('not here.')
-        return -1;
+    removeAtTail() {
+        // Continue from page 197
     }
 }
 
 let dll1 = new DoublyLinkedList();
-dll1.insert('a');
-
-
-dll1.search('g');
+dll1.insertAtHead('a');
+console.log(dll1.removeAtHead());
 
 console.log(dll1)
