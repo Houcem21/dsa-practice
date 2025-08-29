@@ -9,7 +9,7 @@ class SinglyLinkedListNode {
     }
 }
 
-class SinglyLinkedList {
+export class SinglyLinkedList {
     constructor() {
         this.head = null;
         this.size = 0;
@@ -76,7 +76,6 @@ class SinglyLinkedList {
             }
             currentHead = currentHead.next;
         }
-        console.log('not here.')
         return -1;
     }
 }
@@ -91,4 +90,4 @@ sll1.insert('f');
 
 sll1.search('g');
 
-console.log(sll1)
+// console.log(sll1)

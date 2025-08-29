@@ -69,12 +69,51 @@ class DoublyLinkedList {
     }
 
     removeAtTail() {
-        // Continue from page 197
+        const temp = this.tail;
+        switch (this.size) {
+            case 0:
+                break;
+            case 1:
+                this.size--;
+                this.head = null;
+                this.tail = null;
+                break;
+            default:
+                this.size--;
+                this.tail = this.tail.prev;
+                this.tail.next = null;
+                break;
+        }
+        return temp;
+    }
+
+    searchFromHead(value) {
+        let currentHead = this.head;
+        let counter = this.size;
+        while (--counter>=0) {
+            if (currentHead.data == value) return counter;
+            currentHead = currentHead.next;
+        }
+        return -1;
+    }
+
+    searchFromTail(value) {
+        let currentTail = this.tail;
+        let counter = -1;
+        while (++counter<this.size) {
+            if (currentTail.data == value) return counter;
+            currentTail = currentTail.prev;
+        }
+        return -1;
     }
 }
 
 let dll1 = new DoublyLinkedList();
 dll1.insertAtHead('a');
-console.log(dll1.removeAtHead());
+dll1.insertAtHead('b');
+dll1.insertAtHead('c');
+dll1.insertAtHead('d');
+dll1.insertAtHead('e');
 
+console.log('item found at', dll1.searchFromTail('e'))
 console.log(dll1)
