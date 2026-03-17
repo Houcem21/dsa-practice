@@ -1,4 +1,4 @@
-import {display} from './base.js'
+import {display} from '../base.js'
 
 //FIND TWO ARRAY ELEMENTS IN AN ARRAY THAT ADD UP TO A NUMBER
 //Memoise it
