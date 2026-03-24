@@ -102,10 +102,37 @@ class UndirectedGraph {
     }
 
     // BFS Section
+    public traverseBFSRegressivly(fn: (v:number) =>void, queue:Queue = new Queue(), visited:Set<number> = new Set(), vertex:number = this.graph.keys().next().value!):void {
+
+        if (visited.size == this.graph.size) return
+
+        queue.add(vertex)
+        let v:number;
+
+        while(queue.length()) {
+            v = queue.shift();
+            if(!visited.has(v)) {
+                visited.add(v);
+                fn(v);
+                for (let adjacentV of this.graph.get(v)!) {
+                    queue.add(adjacentV.v2);
+                }
+            }
+        }
+        for (let ver of this.graph.keys()) {
+            if (visited.size == this.graph.size) break;
+            if (!visited.has(ver)) this.traverseBFSRegressivly(fn,queue,visited, ver);
+        } 
+    }
+
+    public travereDFS(fn: (v:number) =>void) {
+        
+    }
+
 
     public traverseBFS(fn: (v:number) =>void):void {
         let queue = new Queue();
-        let visited = new Set();
+        let visited = new Set<number>();
 
         queue.add(this.graph.keys().next().value!)
         let vertex:number;
@@ -120,6 +147,16 @@ class UndirectedGraph {
                 }
             }
         }
+        for (let v of this.graph.keys()) {
+            if (visited.size == this.graph.size) break; 
+            if(!visited.has(v)) {
+                fn(v);
+                for (let adjacentV of this.graph.get(v)!) {
+                    if(!visited.has(v)) fn(adjacentV.v2);
+                }
+            }
+        }
+        console.log(this.graph);
     }
 }
 
@@ -138,4 +175,4 @@ undirectedGraph.addEdge({ v1: 4, v2: 7, weight: 4 });
 // undirectedGraph.removeVertex(3);
 // undirectedGraph.display("Graph after vertex 3 is removed");
 
-undirectedGraph.traverseBFS((item)=> console.log(item));
+undirectedGraph.traverseBFSRegressivly((item)=> console.log(item));
