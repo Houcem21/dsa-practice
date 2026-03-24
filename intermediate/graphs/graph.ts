@@ -1,7 +1,27 @@
 interface edge {
-    head: number;
-    target: number;
+    v1: number;
+    v2: number;
     weight?: number;
+}
+
+class Queue {
+    private list: Array<number> = new Array();
+    
+    constructor() {
+        this.list = new Array();
+    }   
+    
+    public add(item:number) {
+        this.list.push(item);
+    }
+
+    public shift():number {
+        return this.list.shift()!;
+    }
+
+    public length():number {
+        return this.list.length;
+    }
 }
 
 class UndirectedGraph {
@@ -11,6 +31,10 @@ class UndirectedGraph {
         this.graph = new Map();
     }
 
+    private isSameEdge(e1: edge, e2: edge): boolean {
+        return ((e1.v1 == e2.v1 && e1.v2 == e2.v2) || (e1.v1 == e2.v2 && e1.v2 == e2.v1))
+    }
+
     public addVertex(value: number): void {
         if (this.graph.has(value)) return
         const newEdgesList: Set<edge> = new Set();
@@ -18,34 +42,100 @@ class UndirectedGraph {
     }
 
     public addEdge(edge: edge): void {
-        if (!this.graph.has(edge.head)) this.addVertex(edge.head);
-        if (!this.graph.has(edge.target)) this.addVertex(edge.target);
+        if (!this.graph.has(edge.v1)) this.addVertex(edge.v1);
+        if (!this.graph.has(edge.v2)) this.addVertex(edge.v2);
 
-        if (this.graph.has(edge.head) && this.graph.has(edge.target)) {
-            for (let e of this.graph.get(edge.head)!) {
-                if ((e.head == edge.head && e.target == edge.target) || (e.head == edge.target && e.target == edge.head)) return;
+        if (this.graph.has(edge.v1) && this.graph.has(edge.v2)) {
+            for (let e of this.graph.get(edge.v1)!) {
+                if (this.isSameEdge(e, edge)) return;
             }
         }
         // Get old lists
-        const oldHeadEdgesList = this.graph.get(edge.head)!;
-        const oldTargetEdgesList = this.graph.get(edge.target)!;
+        const oldv1EdgesList = this.graph.get(edge.v1)!;
+        const oldv2EdgesList = this.graph.get(edge.v2)!;
 
         // Update both vertices with edge
-        this.graph.set(edge.head, oldHeadEdgesList.add(edge));
-        this.graph.set(edge.target, oldTargetEdgesList.add(edge));
+        this.graph.set(edge.v1, oldv1EdgesList.add(edge));
+        this.graph.set(edge.v2, oldv2EdgesList.add(this.flipEdge(edge)));
     }
 
-    public display() {
-        console.log(
+    private flipEdge(edge:edge): edge {
+        return {
+            v1: edge.v2,
+            v2: edge.v1,
+            weight: edge.weight
+        }
+    }
+
+    // compare edge to list of vertex edges and delete if same
+    private removeFromVertex(edge:edge, list:Set<edge>):void {
+        for (let item of list) {
+            if (this.isSameEdge(item, edge)) list.delete(item)
+        }
+    }
+
+    public removeEdge(edge: edge): void {
+        //the edge does not exist bc one or two of its vertices don't
+        if (!(this.graph.has(edge.v1) && this.graph.has(edge.v2))) return
+
+        //remove it from v1
+        this.removeFromVertex(edge, this.graph.get(edge.v1)!);
+        //remove it from v2
+        this.removeFromVertex(edge, this.graph.get(edge.v2)!);
+    }
+
+    public removeVertex(v: number): void {
+        if (!this.graph.has(v)) return
+
+        for (let e of this.graph.get(v)!) {
+            this.removeEdge(e);
+        }
+        this.graph.delete(v);
+    }
+
+    public display(premessage: string = "Graph") {
+        console.log(premessage, ':\n',
             Object.fromEntries(
                 Array.from(this.graph.entries(), ([key, set]) => [key, Array.from(set)])
             )
         );
     }
+
+    // BFS Section
+
+    public traverseBFS(fn: (v:number) =>void):void {
+        let queue = new Queue();
+        let visited = new Set();
+
+        queue.add(this.graph.keys().next().value!)
+        let vertex:number;
+
+        while(queue.length()) {
+            vertex = queue.shift();
+            if(!visited.has(vertex)) {
+                visited.add(vertex);
+                fn(vertex);
+                for (let adjacentV of this.graph.get(vertex)!) {
+                    queue.add(adjacentV.v2);
+                }
+            }
+        }
+    }
 }
 
-const undirectedGraph = new UndirectedGraph();
-undirectedGraph.addEdge({ head: 1, target: 2, weight: 5 });
-undirectedGraph.addEdge({ head: 1, target: 2, weight: 5 });
 
-undirectedGraph.display();
+const undirectedGraph = new UndirectedGraph();
+undirectedGraph.addEdge({ v1: 1, v2: 2, weight: 5 });
+undirectedGraph.addEdge({ v1: 1, v2: 2, weight: 5 });
+undirectedGraph.addEdge({ v1: 1, v2: 3, weight: 1 });
+undirectedGraph.addEdge({ v1: 2, v2: 3, weight: 4 });
+undirectedGraph.addEdge({ v1: 3, v2: 2 });
+
+undirectedGraph.addEdge({ v1: 5, v2: 3, weight: 5 });
+undirectedGraph.addEdge({ v1: 7, v2: 2, weight: 1 });
+undirectedGraph.addEdge({ v1: 4, v2: 7, weight: 4 });
+// undirectedGraph.display("Graph before vertex 3 is removed");
+// undirectedGraph.removeVertex(3);
+// undirectedGraph.display("Graph after vertex 3 is removed");
+
+undirectedGraph.traverseBFS((item)=> console.log(item));
