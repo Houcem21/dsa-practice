@@ -24,6 +24,26 @@ class Queue {
     }
 }
 
+class Stack {
+    private list: Array<number> = new Array();
+    
+    constructor() {
+        this.list = new Array();
+    }   
+    
+    public add(item:number) {
+        this.list.push(item);
+    }
+
+    public shift():number {
+        return this.list.pop()!;
+    }
+
+    public length():number {
+        return this.list.length;
+    }
+}
+
 class UndirectedGraph {
     private graph : Map<number, Set<edge>>;
 
@@ -125,8 +145,13 @@ class UndirectedGraph {
         } 
     }
 
-    public travereDFS(fn: (v:number) =>void) {
-        
+    public traverseDFS(fn: (v:number) =>void, vertex:number=this.graph.keys().next().value!, visited:Set<number> = new Set(), done:boolean = false) {
+        fn(vertex);
+        visited.add(vertex);
+        for (let e of this.graph.get(vertex)!) {
+            if (visited.has(e.v2)) continue;
+            this.traverseDFS(fn, e.v2, visited);
+        }
     }
 
 
@@ -175,4 +200,6 @@ undirectedGraph.addEdge({ v1: 4, v2: 7, weight: 4 });
 // undirectedGraph.removeVertex(3);
 // undirectedGraph.display("Graph after vertex 3 is removed");
 
-undirectedGraph.traverseBFSRegressivly((item)=> console.log(item));
+// undirectedGraph.traverseBFSRegressivly((item)=> console.log(item));
+
+undirectedGraph.traverseDFS((item)=> console.log(item));
